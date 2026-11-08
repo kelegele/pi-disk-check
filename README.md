@@ -11,20 +11,39 @@ launchd 定时磁盘哨兵。每日 10:00 预检 Data 卷使用率，≥85% 才�
 
 分级标准与勿动清单已内置于脚本，两种模式均不读取外部规则文件。
 
-## 快速上手
+## 安装
+
+### Homebrew（推荐）
 
 ```sh
-./install.sh install   # 按实际路径生成 plist 并加载 launchd 任务（~/Library/LaunchAgents）
-./install.sh run       # 手动立即执行一次
-./install.sh status    # 查看加载状态
-./install.sh uninstall # 卸载（项目与历史报告保留）
+brew install kelegele/tap/pi-disk-check
+brew services start pi-disk-check   # 注册 launchd 每日 10:00 定时
 ```
+
+数据与报告落 `$(brew --prefix)/var/pi-disk-check/`；升级 `brew upgrade`，停用 `brew services stop pi-disk-check`。
+
+### 克隆安装
+
+```sh
+git clone https://github.com/kelegele/pi-disk-check
+cd pi-disk-check
+./install.sh install   # 按实际路径生成 plist 并加载 launchd 任务（~/Library/LaunchAgents）
+```
+
+## 手动命令
+
+```sh
+pi-disk-check run      # 立即执行一次检查（默认；克隆安装用 bin/pi-disk-check.sh）
+pi-disk-check report   # 显示最近一次清理报告
+pi-disk-check status   # 检查记录与定时任务状态
+```
+
+环境变量：`PI_DISK_CHECK_THRESHOLD` 门槛百分比（默认 85）、`PI_DISK_CHECK_DATA` 数据目录、`PI_DISK_CHECK_PI` 指定 pi 路径。
 
 ## 调参
 
-- 阈值：`bin/pi-disk-check.sh` 顶部 `THRESHOLD`。
-- 触发时间：`launchd/fh.pi-disk-check.plist` 的 `StartCalendarInterval`（每日 10:00，睡眠错过唤醒后由 launchd 补跑）。
-- 改完重跑 `./install.sh install` 生效（plist 为模板，安装时按实际路径替换占位符，不写死任何路径）。
+- 阈值：环境变量 `PI_DISK_CHECK_THRESHOLD`，或克隆版改 `bin/pi-disk-check.sh` 顶部 `THRESHOLD`。
+- 触发时间：克隆版改 `launchd/fh.pi-disk-check.plist` 后重跑 `./install.sh install`；brew 版固定每日 10:00（睡眠错过唤醒后由 launchd 补跑）。
 
 ## 产出
 
