@@ -1,11 +1,20 @@
 # pi-disk-check
 
-launchd 定时磁盘哨兵。每日 10:00 预检 Data 卷使用率，≥85% 才触发 pi 生成分级清理清单（零风险可清/低风险/需决策）并发 macOS 通知。**只分析，不删除。**
+launchd 定时磁盘哨兵。每日 10:00 预检 Data 卷使用率，≥85% 才生成清理清单（零风险可清 / 低风险 / 需决策）并发 macOS 通知。**只分析，不删除；清理须用户逐项批准。**
+
+## 两种模式
+
+| 模式 | 触发条件 | 产出 |
+|---|---|---|
+| pi 智能分析 | 检测到 [pi](https://github.com/earendil-works/pi)（自动扫描 `~/.pi/agent/bin/pi`、`/opt/homebrew/bin/pi`、`/usr/local/bin/pi`、`$PATH`，可用环境变量 `PI_DISK_CHECK_PI` 显式指定） | 逐项智能分级报告，含建议命令；调 LLM 有 token 成本，每次数分钟 |
+| 基础扫描（降级） | pi 未装或 pi 运行失败 | 纯 shell `du` 下钻 + 规则分级，无任何外部依赖 |
+
+分级标准与勿动清单已内置于脚本，两种模式均不读取外部规则文件。
 
 ## 快速上手
 
 ```sh
-./install.sh install   # 安装并加载 launchd 任务
+./install.sh install   # 按实际路径生成 plist 并加载 launchd 任务（~/Library/LaunchAgents）
 ./install.sh run       # 手动立即执行一次
 ./install.sh status    # 查看加载状态
 ./install.sh uninstall # 卸载（项目与历史报告保留）
@@ -14,12 +23,15 @@ launchd 定时磁盘哨兵。每日 10:00 预检 Data 卷使用率，≥85% 才�
 ## 调参
 
 - 阈值：`bin/pi-disk-check.sh` 顶部 `THRESHOLD`。
-- 时间：`launchd/fh.pi-disk-check.plist` 的 `StartCalendarInterval`。
-- 改完重跑 `./install.sh install` 生效。
+- 触发时间：`launchd/fh.pi-disk-check.plist` 的 `StartCalendarInterval`（每日 10:00，睡眠错过唤醒后由 launchd 补跑）。
+- 改完重跑 `./install.sh install` 生效（plist 为模板，安装时按实际路径替换占位符，不写死任何路径）。
 
 ## 产出
 
-- 报告：`data/reports/YYYY-MM-DD.md`
-- 日志：`data/check.log`
+- 报告：`data/reports/YYYY-MM-DD.md`（同日覆盖更新）
+- 日志：`data/check.log`（超 1MB 自动截断）
+- pi 原始输出：`data/last-pi-output.txt`（仅诊断用）
 
-详见 `AGENTS.md`（规范真相源）与 `HANDOVER.md`（交接）。
+## 发布
+
+安装脚本与 plist 模板均无硬编码路径、无项目外依赖（pi 为可选增强），可直接发布；Homebrew 分发建议走 tap + `brew services start`。

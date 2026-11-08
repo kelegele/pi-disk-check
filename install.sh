@@ -15,7 +15,10 @@ case "${1:-help}" in
   install)
     mkdir -p "$ROOT/data"
     bootout
-    cp "$PLIST_SRC" "$PLIST_DST"
+    # 模板占位符按实际安装位置替换，不写死任何路径
+    SCRIPT_ESC=$(printf '%s' "$ROOT/bin/pi-disk-check.sh" | sed 's/[&|]/\\&/g')
+    DATA_ESC=$(printf '%s' "$ROOT/data" | sed 's/[&|]/\\&/g')
+    sed -e "s|@SCRIPT_PATH@|$SCRIPT_ESC|g" -e "s|@DATA_DIR@|$DATA_ESC|g" "$PLIST_SRC" > "$PLIST_DST"
     launchctl bootstrap "gui/$UID_N" "$PLIST_DST"
     echo "已安装并加载。查看排程: ./install.sh status"
     echo "立即首跑验证: ./install.sh run"

@@ -7,7 +7,7 @@
   <key>ProgramArguments</key>
   <array>
     <string>/bin/sh</string>
-    <string>/Users/fh/Projects/pi-disk-check/bin/pi-disk-check.sh</string>
+    <string>@SCRIPT_PATH@</string>
   </array>
   <key>StartCalendarInterval</key>
   <dict>
@@ -17,6 +17,6 @@
     <integer>0</integer>
   </dict>
   <key>StandardErrorPath</key>
-  <string>/Users/fh/Projects/pi-disk-check/data/launchd.err.log</string>
+  <string>@DATA_DIR@/launchd.err.log</string>
 </dict>
 </plist>

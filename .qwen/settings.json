@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
+            "command": "/usr/bin/python3 ~/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
             "timeout": 3
           }
         ]
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
+            "command": "/usr/bin/python3 ~/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
             "timeout": 3
           }
         ]
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
+            "command": "/usr/bin/python3 ~/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
             "timeout": 3
           }
         ]
@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
+            "command": "/usr/bin/python3 ~/Projects/pi-disk-check/scripts/agent_hook.py --agent QwenWork",
             "timeout": 3
           }
         ]

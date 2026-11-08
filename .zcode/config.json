@@ -7,7 +7,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
+              "command": "/usr/bin/python3 ~/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
               "timeout": 3
             }
           ]
@@ -18,7 +18,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
+              "command": "/usr/bin/python3 ~/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
               "timeout": 3
             }
           ]
@@ -29,7 +29,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
+              "command": "/usr/bin/python3 ~/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
               "timeout": 3
             }
           ]
