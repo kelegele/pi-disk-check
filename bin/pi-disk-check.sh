@@ -38,7 +38,7 @@ show_report() {
 show_status() {
   echo "== 定时任务 =="
   FOUND=0
-  for L in fh.pi-disk-check homebrew.pi-disk-check; do
+  for L in fh.pi-disk-check homebrew.pi-disk-check sh.brew.pi-disk-check; do
     if launchctl print "gui/$(id -u)/$L" >/dev/null 2>&1; then
       echo "已加载（launchd）: $L"
       FOUND=1
