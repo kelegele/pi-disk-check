@@ -24,7 +24,7 @@ launchd 定时磁盘哨兵：`df` 预检 Data 卷使用率，超阈值才触发 
 
 ## pi headless 陷阱
 
-- 必须用绝对路径 `~/.pi/agent/bin/pi`：launchd 环境无 zshrc PATH；该启动器自带 node 路径解析，不依赖 nvm。
+- pi 定位顺序 `PI_DISK_CHECK_PI` env → 常见路径 → `$PATH`；**pi 包 bin 用 `#!/usr/bin/env node` 找 node，本机无 pi-node 自带 node、实际依赖 nvm node，launchd 服务上下文必须补 PATH（脚本已内置）**，否则 exit 127。
 - 参数组合已验证可用：`--no-session --no-extensions --no-skills --no-mcp --no-prompt-templates -p "<prompt>"`。
 - **pi 会读全局 AGENTS.md 并受其「产出归子文件夹」规范影响自建目录**：报告路径必须在 prompt 中声明为唯一允许路径并禁自建目录（已实现），否则报告会写到 `~/disk-cleanup/` 之类越界位置。
 - **bash 3.2 吞字节陷阱**：`$VAR` 不带花括号且紧跟全角字符时，变量值与全角字符首字节被吞（如 `$STATUS；` 日志变乱码）。多字节字符串内的变量一律写 `${VAR}`。

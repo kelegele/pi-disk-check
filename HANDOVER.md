@@ -2,8 +2,9 @@
 
 ## 0. 现状与启动
 
-- **已安装、已实跑**（2026-11-09）：launchd 已加载（每日 10:00）；脚本多轮真实验证（pi 模式与降级模式均通过），报告与日志见 `data/`。手动调试直接 `./install.sh run`。**清理未执行，待用户逐项批准。**
-- **已去硬依赖**（发布公开改造）：pi 为可选增强（`PI_DISK_CHECK_PI` env → 常见路径 → `$PATH` 定位；未装或失败自动降级纯 shell 基础扫描）；pi prompt 自包含分级规范，不读全局 AGENTS.md；plist 为模板（`@SCRIPT_PATH@`/`@DATA_DIR@` 占位符），install.sh 按实际路径替换后装入 `~/Library/LaunchAgents`。可直接发布（brew tap 候选）。
+- **本机已切 brew 管理**（2026-11-09）：brew 版 v0.1.3+ 定时任务 `sh.brew.pi-disk-check`（每日 10:00）在跑；克隆版 launchd 已卸载；数据已迁 `$(brew --prefix)/var/pi-disk-check/`。发布链路：tag → release → `kelegele/homebrew-tap` Formula → brew upgrade。
+- pi 模式与降级模式均真实验证通过（含服务上下文 pi 修复）。手动检查：`pi-disk-check run`；报告：`pi-disk-check report`。**清理未执行，待用户逐项批准。**
+- **已去硬依赖**（发布公开改造）：pi 为可选增强（未装自动降级纯 shell 基础扫描）；pi prompt 自包含分级规范，不读全局 AGENTS.md；plist 为模板。克隆安装路径保留（install.sh），brew 路径见 README。
 
 ## 1. 背景与去向
 
@@ -11,7 +12,7 @@
 
 ## 2. cwd / 环境陷阱
 
-- **launchd 环境 PATH 精简**：pi 定位顺序 `PI_DISK_CHECK_PI` env → 常见路径（`~/.pi/agent/bin/pi` 等）→ `$PATH`；启动器自带 node 解析，不依赖 nvm。
+- **launchd 环境 PATH 精简**：pi 定位顺序 `PI_DISK_CHECK_PI` env → 常见路径 → `$PATH`；**pi 包 bin 用 `#!/usr/bin/env node` 找 node，本机 pi 无自带 node（pi-node 目录不存在），实际依赖 nvm node——服务上下文必须补 PATH（脚本已内置，v0.1.3）**，否则 pi exit 127。
 - **无全局 AGENTS.md 依赖**：分级标准与勿动清单已内联进 prompt，脚本 `cd` 项目根而非 `$HOME`。pi 仍会读全局 AGENTS.md 并受其「产出归子文件夹」规范影响，故 prompt 必须声明报告路径为唯一允许路径（已实现，曾因此越界写过 `~/disk-cleanup/`）。
 - **pi headless 参数组合已验证**：`--no-session --no-extensions --no-skills --no-mcp --no-prompt-templates -p`。
 - **bash 3.2 吞字节陷阱**：`$VAR` 不带花括号紧跟全角字符会吞字节（变量值与全角首字节一起丢），多字节字符串内一律 `${VAR}`；awk 按空白分列会截断含空格路径，用 `sub(/^[^\t]*\t/, "")` 取 tab 后整段。
