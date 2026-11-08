@@ -26,7 +26,7 @@ case "${1:-help}" in
   uninstall)
     bootout
     rm -f "$PLIST_DST"
-    echo "已卸载（项目与历史报告保留于 $ROOT）"
+    echo "已卸载（项目与历史报告保留于 ${ROOT}）"
     ;;
   status)
     launchctl print "gui/$UID_N/$LABEL" 2>/dev/null | grep -E 'state|program|run interval' || echo "未加载"

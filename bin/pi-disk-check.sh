@@ -16,7 +16,14 @@
 THRESHOLD="${PI_DISK_CHECK_THRESHOLD:-85}"
 VOLUME=/System/Volumes/Data
 PROJECT_ROOT=$(cd "$(dirname "$0")/.." && pwd)
-DATA_DIR="${PI_DISK_CHECK_DATA:-$PROJECT_ROOT/data}"
+# 数据目录：显式 env > Homebrew 安装树内固定 var 路径 > 项目内 data（克隆安装）
+case "$0" in
+  /opt/homebrew/*) BREW_PREFIX=/opt/homebrew ;;
+  /usr/local/*)    BREW_PREFIX=/usr/local ;;
+  *)               BREW_PREFIX= ;;
+esac
+DATA_DIR="${PI_DISK_CHECK_DATA:-${BREW_PREFIX:+$BREW_PREFIX/var/pi-disk-check}}"
+DATA_DIR="${DATA_DIR:-$PROJECT_ROOT/data}"
 LOG="$DATA_DIR/check.log"
 REPORTS="$DATA_DIR/reports"
 
