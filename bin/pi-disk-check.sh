@@ -116,18 +116,18 @@ run_check() {
   # ---- 降级：纯 shell 基础扫描 + 规则分级 ----
   run_degraded() {
     log "降级为基础扫描（未检测到可用的 pi）"
-    # du -xk 采集 KB；展示统一 GB 四位小数；路径取首个 tab 之后整段
+    # du -xsk 采集（-s 必须带：无 -s 时 du 递归输出子目录行，加总会重复计数）；展示统一 GB 四位小数；路径取首个 tab 之后整段
     fmt_list() { awk '{p=substr($0, index($0,"\t")+1); printf "- `%s` %12.4f GB\n", p, $1*1024/1e9}'; }
     fmt_raw()  { awk '{p=substr($0, index($0,"\t")+1); printf "%12.4f GB  %s\n", $1*1024/1e9, p}'; }
-    CACHES=$(find "$HOME/Library/Caches" -maxdepth 1 -mindepth 1 ! -name 'com.apple.*' -exec du -xk {} + 2>/dev/null | sort -k1,1nr | head -15 | fmt_list)
-    CACHE_TOTAL=$(find "$HOME/Library/Caches" -maxdepth 1 -mindepth 1 ! -name 'com.apple.*' -exec du -xk {} + 2>/dev/null | awk '{s+=$1} END {printf "%.4f", s*1024/1e9}')
-    NODE_MODULES=$(find "$HOME/Projects" -maxdepth 4 -type d -name node_modules -prune -exec du -xk {} + 2>/dev/null | sort -k1,1nr | head -15 | fmt_list)
-    NM_TOTAL=$(find "$HOME/Projects" -maxdepth 4 -type d -name node_modules -prune -exec du -xk {} + 2>/dev/null | awk '{s+=$1} END {printf "%.4f", s*1024/1e9}')
-    LOGS=$(du -xk "$HOME/Library/Logs" 2>/dev/null | cut -f1 | awk '{printf "%.4f", $1*1024/1e9}')
-    APP_CACHES=$(find "$HOME/Library/Application Support" -maxdepth 3 -type d -iname 'cache*' -exec du -xk {} + 2>/dev/null | sort -k1,1nr | head -10 | fmt_list)
-    APPS=$(du -xk /Applications/* 2>/dev/null | sort -k1,1nr | head -10 | fmt_list)
-    CONTAINERS=$(du -xk "$HOME/Library/Containers"/* 2>/dev/null | sort -k1,1nr | head -8 | fmt_list)
-    OVERVIEW=$(du -xk "$HOME/Library/Caches" "$HOME/Library/Application Support" "$HOME/Library/Containers" "$HOME/Library/Group Containers" "$HOME/Library/Logs" "$HOME/Library/Developer" /Applications "$HOME/Projects" 2>/dev/null | sort -k1,1nr | fmt_raw)
+    CACHES=$(find "$HOME/Library/Caches" -maxdepth 1 -mindepth 1 ! -name 'com.apple.*' -exec du -xsk {} + 2>/dev/null | sort -k1,1nr | head -15 | fmt_list)
+    CACHE_TOTAL=$(find "$HOME/Library/Caches" -maxdepth 1 -mindepth 1 ! -name 'com.apple.*' -exec du -xsk {} + 2>/dev/null | awk '{s+=$1} END {printf "%.4f", s*1024/1e9}')
+    NODE_MODULES=$(find "$HOME/Projects" -type d -name node_modules -prune -exec du -xsk {} + 2>/dev/null | sort -k1,1nr | head -15 | fmt_list)
+    NM_TOTAL=$(find "$HOME/Projects" -type d -name node_modules -prune -exec du -xsk {} + 2>/dev/null | awk '{s+=$1} END {printf "%.4f", s*1024/1e9}')
+    LOGS=$(du -xsk "$HOME/Library/Logs" 2>/dev/null | cut -f1 | awk '{printf "%.4f", $1*1024/1e9}')
+    APP_CACHES=$(find "$HOME/Library/Application Support" -maxdepth 3 -type d -iname 'cache*' -exec du -xsk {} + 2>/dev/null | sort -k1,1nr | head -10 | fmt_list)
+    APPS=$(du -xsk /Applications/* 2>/dev/null | sort -k1,1nr | head -10 | fmt_list)
+    CONTAINERS=$(du -xsk "$HOME/Library/Containers"/* 2>/dev/null | sort -k1,1nr | head -8 | fmt_list)
+    OVERVIEW=$(du -xsk "$HOME/Library/Caches" "$HOME/Library/Application Support" "$HOME/Library/Containers" "$HOME/Library/Group Containers" "$HOME/Library/Logs" "$HOME/Library/Developer" /Applications "$HOME/Projects" 2>/dev/null | sort -k1,1nr | fmt_raw)
     T_GB=$(df "$VOLUME" | awk 'NR==2 {printf "%.4f", ($3+$4)*512/1e9}')
     U_GB=$(df "$VOLUME" | awk 'NR==2 {printf "%.4f", $3*512/1e9}')
 
