@@ -1,0 +1,40 @@
+{
+  "hooks": {
+    "enabled": true,
+    "events": {
+      "SessionStart": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
+              "timeout": 3
+            }
+          ]
+        }
+      ],
+      "UserPromptSubmit": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
+              "timeout": 3
+            }
+          ]
+        }
+      ],
+      "Stop": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent ZCode",
+              "timeout": 3
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

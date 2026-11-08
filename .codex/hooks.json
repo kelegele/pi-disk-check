@@ -1,0 +1,59 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent Codex",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent Codex",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent Codex",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "Interrupt": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent Codex",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 /Users/fh/Projects/pi-disk-check/scripts/agent_hook.py --agent Codex",
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -22,12 +22,17 @@
 
 ```
 pi-disk-check/
-├── AGENTS.md                       # 项目规范：红线、架构、数据口径、pi 陷阱（真相源）
+├── AGENTS.md                       # 项目规范：红线、架构、数据口径、pi 陷阱、多 Agent 交接（真相源）
 ├── HANDOVER.md                     # 本文档
 ├── README.md                       # 快速上手
 ├── install.sh                      # install/uninstall/status/run
 ├── bin/pi-disk-check.sh            # 主脚本：预检→触发 pi→通知
 ├── launchd/fh.pi-disk-check.plist  # 每日 10:00；源文件，安装时复制到 ~/Library/LaunchAgents
+├── .agent-handoff.json             # 交接模式开关（enabled=true，勿动）
+├── scripts/agent_hook.py           # 生命周期钩子：自动运行记录（docs/execution/agent-runs/）
+├── .codex/hooks.json               # Codex 钩子配置（5 事件）
+├── .zcode/config.json              # ZCode 钩子配置（3 事件）
+├── .qwen/settings.json             # QwenWork 钩子配置（4 事件）
 ├── data/                           # 运行产物（gitignore）：check.log / reports/ / last-pi-output.txt
 └── .gitignore
 ```
@@ -38,14 +43,18 @@ pi-disk-check/
 - 报告同日覆盖更新（`YYYY-MM-DD.md`），历史日期报告勿动。
 - plist 以项目内 `launchd/` 为源，`~/Library/LaunchAgents/` 下是副本；改参数改源文件后重跑 `./install.sh install`。
 
-## 5. 可继续方向（未指派）
+## 5. 自动运行记录
+
+交接模式已开启（`.agent-handoff.json` enabled=true）。Codex／ZCode／QwenWork 钩子配置就位，钩子脚本已实弹验证（模拟 SessionStart 生成 run 目录成功，测试数据已清理）。运行记录落 `docs/execution/agent-runs/<Agent>-<hash>/`（runtime.json + events.jsonl + handover.md）；钩子只记状态，业务结果由 Agent 核对填写。**钩子在客户端新会话才加载**：已有打开的 Codex/ZCode/QwenWork 会话需重开。
+
+## 6. 可继续方向（未指派）
 
 1. 安装 + 首跑验证（第 0 节命令），核对通知与报告质量。
 2. 通知渠道扩展：企微/邮件推送（当前仅 macOS 通知）。
 3. 成本优化：限制 pi 下钻深度或白名单目录，缩短首跑耗时。
 4. 阈值精化：百分比 + 绝对剩余空间双条件（大盘 90% 仍剩几十 G 时不该报警）。
 
-## 6. 协作红线引用
+## 7. 协作红线引用
 
 - `/Users/fh/AGENTS.md`「磁盘清理」：未经用户逐项同意不得删除。
 - `/Users/fh/AGENTS.md` 会话交接模式：项目根 `.agent-handoff.json` 未配置，续接会话按 `/Users/fh/agent-project-handoff/STARTUP.md` 询问用户，勿擅自写入。
