@@ -86,6 +86,12 @@ run_check() {
   [ -z "$PI_BIN" ] && PI_BIN=$(command -v pi 2>/dev/null || true)
 
   run_pi() {
+    # launchd 上下文 PATH 极简：pi 包 bin 用 `#!/usr/bin/env node` 找 node，
+    # 本机 node 常在 nvm/homebrew，需显式补 PATH，否则 pi 子进程 exit 127
+    for n in "$HOME/.nvm/versions/node"/*/bin /opt/homebrew/bin /usr/local/bin; do
+      [ -d "$n" ] && PATH="$n:$PATH"
+    done
+    export PATH
     log "超阈值，触发 pi 分析（${PI_BIN}）"
     # 分级标准与勿动清单已内联，pi 无需读取任何外部规则文件
     "$PI_BIN" --no-session --no-extensions --no-skills --no-mcp --no-prompt-templates -p "磁盘空间紧张：Data 卷使用率 ${USE_PCT}%，仅剩 ${FREE_H}。做只读分析，严禁删除任何文件。
