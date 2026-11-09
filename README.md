@@ -38,7 +38,7 @@ pi-disk-check report   # 显示最近一次清理报告
 pi-disk-check status   # 检查记录与定时任务状态
 ```
 
-环境变量：`PI_DISK_CHECK_THRESHOLD` 门槛百分比（默认 85）、`PI_DISK_CHECK_DATA` 数据目录、`PI_DISK_CHECK_PI` 指定 pi 路径。
+环境变量：`PI_DISK_CHECK_THRESHOLD` 门槛百分比（默认 85）、`PI_DISK_CHECK_DATA` 数据目录、`PI_DISK_CHECK_PI` 指定 pi 路径、`PI_DISK_CHECK_MAX_NOTIFS` 每日通知上限（默认 2，0=静默；报告照常生成）。
 
 ## 调参
 

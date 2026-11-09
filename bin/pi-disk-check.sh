@@ -12,6 +12,7 @@
 #   PI_DISK_CHECK_THRESHOLD  使用率门槛百分比（默认 85）
 #   PI_DISK_CHECK_DATA       数据目录（默认 brew 安装树内固定 var 路径；克隆安装为项目内 data/）
 #   PI_DISK_CHECK_PI         pi 可执行文件路径（默认自动定位）
+#   PI_DISK_CHECK_MAX_NOTIFS 每日通知上限（默认 2，0=静默；报告照常生成）
 #
 # 容量展示口径：一律 GB（十进制，1 GB = 10⁹ 字节），四位小数。
 
@@ -190,7 +191,24 @@ run_check() {
     MODE_NOTE="基础模式清单已生成（安装 pi 可获智能分级）"
   fi
 
-  osascript -e "display notification \"磁盘 ${USE_PCT}%，仅剩 ${FREE_GB} GB。${MODE_NOTE}：$REPORT\" with title \"磁盘空间告警\" sound name \"Glass\"" >/dev/null 2>&1
+  # 每日通知频控：PI_DISK_CHECK_MAX_NOTIFS（默认 2，0=静默）；计数存 $DATA_DIR/notif-count，跨日重置
+  NOTIF_MAX="${PI_DISK_CHECK_MAX_NOTIFS:-2}"
+  NOTIF_FILE="$DATA_DIR/notif-count"
+  NOTIF_TODAY=$(date '+%F')
+  NDATE=""; NCOUNT=0
+  if [ -f "$NOTIF_FILE" ]; then
+    read -r NDATE NCOUNT < "$NOTIF_FILE" || true
+  fi
+  case "$NCOUNT" in ''|*[!0-9]*) NCOUNT=0 ;; esac
+  [ "$NDATE" != "$NOTIF_TODAY" ] && NCOUNT=0
+  if [ "$NCOUNT" -lt "$NOTIF_MAX" ]; then
+    osascript -e "display notification \"磁盘 ${USE_PCT}%，仅剩 ${FREE_GB} GB。${MODE_NOTE}：$REPORT\" with title \"磁盘空间告警\" sound name \"Glass\"" >/dev/null 2>&1
+    NCOUNT_NEXT=$((NCOUNT+1))
+    echo "$NOTIF_TODAY $NCOUNT_NEXT" > "$NOTIF_FILE"
+    log "通知已发（当日第 ${NCOUNT_NEXT} 次，上限 ${NOTIF_MAX}）"
+  else
+    log "通知已达每日上限（${NOTIF_MAX}），跳过；报告: $REPORT"
+  fi
 }
 
 case "${1:-run}" in
