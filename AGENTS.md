@@ -15,6 +15,12 @@ launchd 定时磁盘哨兵：`df` 预检 Data 卷使用率，超阈值才触发 
 - `launchd/fh.pi-disk-check.plist`：每日 10:00；睡眠错过唤醒后补跑一次（launchd 原生行为）。**源文件是模板**（`@SCRIPT_PATH@`/`@DATA_DIR@` 占位符），`install.sh install` 按实际路径替换后复制到 `~/Library/LaunchAgents`。
 - `install.sh`：`install` / `uninstall` / `status` / `run`（手动立即执行一次）。
 
+## 发布
+
+- 代码行为改动推到 main 后必须打 `vX.Y.Z` tag 并同步 homebrew-tap 公式（url/sha256/version），缺一即发布不完整（2026-11-11 曾漏）。
+- 本机定时任务跑的是 brew 版（`/opt/homebrew/bin/pi-disk-check`），`~/Projects` 仅开发源码；改动须经 tag+tap+`brew upgrade pi-disk-check` 才对本机生效。
+- 纯文档/注释提交不必打 tag。
+
 ## 数据口径
 
 - `data/check.log`：一行一事件（`时间 事件`），超 1MB 自动截断。
