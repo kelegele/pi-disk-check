@@ -14,6 +14,7 @@ launchd 定时磁盘哨兵：`df` 预检 Data 卷使用率，超阈值才触发 
   - pi prompt 自包含分级标准与勿动清单，不读全局 AGENTS.md；报告路径硬约束防 pi 自建目录。
 - `launchd/fh.pi-disk-check.plist`：每日 10:00；睡眠错过唤醒后补跑一次（launchd 原生行为）。**源文件是模板**（`@SCRIPT_PATH@`/`@DATA_DIR@` 占位符），`install.sh install` 按实际路径替换后复制到 `~/Library/LaunchAgents`。
 - `install.sh`：`install` / `uninstall` / `status` / `run`（手动立即执行一次）。
+- 通知：terminal-notifier 优先、未装回退 osascript；terminal-notifier 为 ad-hoc 签名，新机首次须经 `open` 启动 .app 触发系统授权框（CLI 直调报 "Notifications are not allowed"），授权后 TCC 按 bundle id 记忆。
 
 ## 发布
 
