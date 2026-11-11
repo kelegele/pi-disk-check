@@ -50,6 +50,7 @@ pi-disk-check status   # 检查记录与定时任务状态
 - 报告：`data/reports/YYYY-MM-DD.md`（同日覆盖更新）
 - 日志：`data/check.log`（超 1MB 自动截断）
 - pi 原始输出：`data/last-pi-output.txt`（仅诊断用）
+- 通知：默认 osascript（点击仅激活发送方应用）；装 terminal-notifier（`brew install terminal-notifier`）后首次需授权，点击即直达当日报告
 
 ## 发布
 
