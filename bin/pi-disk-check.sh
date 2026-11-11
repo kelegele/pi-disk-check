@@ -202,7 +202,14 @@ run_check() {
   case "$NCOUNT" in ''|*[!0-9]*) NCOUNT=0 ;; esac
   [ "$NDATE" != "$NOTIF_TODAY" ] && NCOUNT=0
   if [ "$NCOUNT" -lt "$NOTIF_MAX" ]; then
-    osascript -e "display notification \"磁盘 ${USE_PCT}%，仅剩 ${FREE_GB} GB。${MODE_NOTE}：$REPORT\" with title \"磁盘空间告警\" sound name \"Glass\"" >/dev/null 2>&1
+    # 点击通知直达报告须 terminal-notifier 的 -open；osascript 做不到点击动作，仅作回退
+    TN_BIN="$(command -v terminal-notifier || true)"
+    [ -z "$TN_BIN" ] && [ -x /opt/homebrew/bin/terminal-notifier ] && TN_BIN=/opt/homebrew/bin/terminal-notifier
+    if [ -n "$TN_BIN" ]; then
+      "$TN_BIN" -title "磁盘空间告警" -message "磁盘 ${USE_PCT}%，仅剩 ${FREE_GB} GB。${MODE_NOTE}，点击打开报告" -open "file://$REPORT" -sound Glass >/dev/null 2>&1
+    else
+      osascript -e "display notification \"磁盘 ${USE_PCT}%，仅剩 ${FREE_GB} GB。${MODE_NOTE}：$REPORT\" with title \"磁盘空间告警\" sound name \"Glass\"" >/dev/null 2>&1
+    fi
     NCOUNT_NEXT=$((NCOUNT+1))
     echo "$NOTIF_TODAY $NCOUNT_NEXT" > "$NOTIF_FILE"
     log "通知已发（当日第 ${NCOUNT_NEXT} 次，上限 ${NOTIF_MAX}）"
